@@ -68,7 +68,7 @@ token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 url="${MASTER_URL:-https://kubernetes.default.svc:443}/api/${KUBERNETES_API_VERSION:-v1}/namespaces/${POD_NAMESPACE}/replicationcontrollers/hawkular-metrics"
 cacrt="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
-status_code=$(curl --cacert ${cacrt} --max-time 10 --connect-timeout 10 -L -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${token}" $url)
+status_code=$(curl --cacert ${cacrt} --max-time 60 --connect-timeout 60 -L -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${token}" $url)
 if [ "$status_code" != 200 ]; then
   if [ "$status_code" == "403" ]; then
     echo "Error: the service account for Hawkular Metrics does not have permission to view resources in this namespace. View permissions are required for Hawkular Metrics to function properly."
@@ -84,7 +84,7 @@ else
 fi
 
 url="${MASTER_URL:-https://kubernetes.default.svc:443}/api/${KUBERNETES_API_VERSION:-v1}/namespaces?watch=true"
-status_code=$(curl --cacert ${cacrt} --max-time 10 --connect-timeout 10 -L -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${token}" $url)
+status_code=$(curl --cacert ${cacrt} --max-time 60 --connect-timeout 60 -L -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${token}" $url)
 if [ "$status_code" != 200 ]; then
   if [ "$status_code" == "403" ]; then
     echo " "
